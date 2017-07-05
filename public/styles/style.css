@@ -94,6 +94,8 @@ body {
 .album-title {
     color: #29a7b4;
     padding-left: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .album-row {
