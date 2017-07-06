@@ -19,6 +19,18 @@
         event.preventDefault();
         $(this).ekkoLightbox();
     });
+    var shouldMove = false;
+    var startStopCarousel = function() {
+      if (shouldMove === true) {
+        $('.carousel').carousel('cycle');
+        $('#carouselBtn').text('Pause Slideshow');
+        shouldMove = false; // set to false for next iteration
+      } else {
+        $('.carousel').carousel('pause');
+        $('#carouselBtn').text('Start Slideshow');
+        shouldMove = true;
+      }
+    };
   </script>
 </body>
 </html>

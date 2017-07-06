@@ -14,7 +14,7 @@ const Album = ({album, selectAlbum}) => {
   });
 
   return (
-    <div>
+    <div className="album-with-title">
       <div className="row">
         <div className="col-md-12">
           <h3 className="album-title" onClick={() => { selectAlbum(album); }}>{album.name}</h3>
