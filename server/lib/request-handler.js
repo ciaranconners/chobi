@@ -45,6 +45,17 @@ requestHandler.getUser = function (req, res) {
   }
 };
 
+requestHandler.updateUser = function(req, res) {
+  var currentUsername = req.session.username;
+  var id = req.params.id;
+  var albums = req.body.albums;
+
+  User.findByIdAndUpdate({_id: id}, {albums: albums}, {new: true})
+  .then(function(updatedUserData) {
+    res.json(updatedUserData);
+  });
+
+}
 
 requestHandler.handleUploadPhoto = (req, res) => {
   // function from multer - used to parse multi-part form data
