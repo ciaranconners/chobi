@@ -31,14 +31,13 @@ const AlbumPhotoDisplay = ({photos, albums, selectAlbum, currentPhoto}) => {
     }
   })
   const indicators = photos.map((photo, i) => {
-      return (<li className="" data-slide-to={i} data-target="#myCarousel"><img alt="" src={photo.url}/></li>)
-  })
+    return (<li className="" data-slide-to={i} data-target="#myCarousel"><img alt="" src={photo.url}/></li>)
+    })
   return (
     <div>
-      <div id="myCarousel" className="carousel slide" data-ride="carousel" data-interval="false">
+      <div id="myCarousel" className="carousel slide" data-ride="carousel">
         {/*Wrapper for carousel items*/}
         <div className="carousel-inner cont-slider">
-
           {slides}
         </div>
         {/*Carousel controls*/}
@@ -49,7 +48,7 @@ const AlbumPhotoDisplay = ({photos, albums, selectAlbum, currentPhoto}) => {
             <span className="glyphicon glyphicon-chevron-right"></span>
         </a>
       </div>
-
+      <button id="carouselBtn" onClick={startStopCarousel}>Start Slideshow</button>
       {/*Carousel indicators*/}
       <ol className="carousel-indicators">
         {indicators}
@@ -59,3 +58,9 @@ const AlbumPhotoDisplay = ({photos, albums, selectAlbum, currentPhoto}) => {
 }
 
 export default AlbumPhotoDisplay;
+
+
+/// PLAN OF ACTION
+
+  // add a button to the carousel wrapper
+  // this button triggers a function call which sets an interval
