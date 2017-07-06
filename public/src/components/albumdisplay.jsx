@@ -9,6 +9,7 @@ Render a single album to the page
 const AlbumDisplay = ({currentAlbum, albums, selectAlbum, currentPhoto}) => {
   return (
     <div>
+      <h1>{currentAlbum.name}</h1>
       <AlbumPhotoDisplay photos={currentAlbum.photos} albums={albums} selectAlbum={selectAlbum} currentPhoto={currentPhoto}/>
     </div>
   );
