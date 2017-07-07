@@ -15,6 +15,8 @@ class AlbumPhotoDisplay extends React.Component {
   render() {
     return (
       <div>
+        <button id="carouselBtn" onClick={startStopCarousel}>Start Slideshow</button>
+
         <div id="myCarousel" className="carousel slide" data-ride="carousel">
           <div className="carousel-inner cont-slider">{
             this.props.photos.map((photo, i) => {
@@ -48,17 +50,17 @@ class AlbumPhotoDisplay extends React.Component {
           </a>
         </div>
 
-        <button id="carouselBtn" onClick={startStopCarousel}>Start Slideshow</button>
-
-        <ol className="carousel-indicators">{
-          this.props.photos.map((photo, i) => {
-            return (
-              <li className="" data-slide-to={i} data-target="#myCarousel">
-                <img src={photo.url}/>
-              </li>
-            )
-          })
-        }</ol>
+        <div className="indicators-container">
+          <ol className="carousel-indicators">{
+            this.props.photos.map((photo, i) => {
+              return (
+                <li className="" data-slide-to={i} data-target="#myCarousel">
+                  <img src={photo.url}/>
+                </li>
+              )
+            })
+          }</ol>
+        </div>
       </div>
     )
   }
