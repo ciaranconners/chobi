@@ -5,9 +5,9 @@ Render Photo upload form to dropdown in navbar:
   -call upon addPhoto method from App.jsx
 -------------------------------*/
 
-const PhotoForm = ({addPhoto, currentUser}) => {
+const PhotoForm = ({addPhoto, currentUser, selectAlbum, getAlbum}) => {
   let photo;
-  let name;
+  var name = getAlbum();
   let desc;
   let newName;
   let albums;
@@ -22,7 +22,9 @@ const PhotoForm = ({addPhoto, currentUser}) => {
 
   $('select#name').on('change', function(e) {
     e.preventDefault();
-    name = $(this).val();
+    //name = $(this).val();
+    selectAlbum($(this).val());
+    // name = getAlbum();
     console.log(name);
     if($(this).val() === '__newalbum') {
       $('.new-name-hidden').show();
@@ -70,4 +72,3 @@ const PhotoForm = ({addPhoto, currentUser}) => {
 };
 
 export default PhotoForm;
-
