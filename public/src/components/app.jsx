@@ -8,6 +8,25 @@ import Album from './album.jsx';
 Main react App:
   -holds the states
   -holds the methods
+
+_________________________________
+Navbar receives:
+  - currentUser   as  this.state.currentUser
+
+  - addPhoto      as  this.addPhoto.bind(this)
+  - getAlbum      as  this.getSelectedAlbum.bind(this)
+  - selectAlbum   as  this.setSelectedAlbum.bind(this)
+
+AlbumList receives:
+  - albums        as  albums
+  - selectAlbum   as  selectAlbum
+  - deleteAlbum   as  deleteAlbum
+
+AlbumDisplay receives:
+  - currentAlbum  as  currentAlbum
+  - currentPhoto  as  currentPhoto
+_________________________________
+
 -------------------------------*/
 
 export default class App extends React.Component {
@@ -28,18 +47,8 @@ export default class App extends React.Component {
     };
   }
 
-  // getAlbumNames() {
-  //   var names = this.state.albums.map(function(album) { return album.name});
-  //   this.setState({'albumList', names});
-  // }
-
-  setSelectedAlbum(name) {
-    this.setState({'selectedAlbum': name});
-  }
-
-  getSelectedAlbum() {
-    return this.state.selectedAlbum;
-  }
+  // ------------------------------------------------------
+  //  Navbar stuff
 
   addPhoto(photo, albumName, description, newAlbumName) {
 
@@ -75,6 +84,17 @@ export default class App extends React.Component {
     });
   }
 
+  getSelectedAlbum() {
+    return this.state.selectedAlbum;
+  }
+
+  setSelectedAlbum(name) {
+    this.setState({'selectedAlbum': name});
+  }
+
+  // ------------------------------------------------------
+  //  AlbumList stuff
+
   selectAlbum(album, photo) {
     console.log('fired selectAlbum');
     let photoNum = photo || 0;
@@ -106,13 +126,17 @@ export default class App extends React.Component {
     }
   }
 
+  // ------------------------------------------------------
+  //  GET request on app re-render (after upload on main page)
+  //    could probably add this to the other view to make it
+  //    update also
+
   componentDidMount() {
     $.ajax({
       type: 'GET',
       url: '/user/' + this.state.currentUser,
       success: function(data) {
         this.setState({albums: data.albums, currentUser: data, displayUser: data});
-        //this.getAlbumNames();
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -120,7 +144,10 @@ export default class App extends React.Component {
     });
   }
 
-  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto}) { //logic for whether a single album should display or album list
+  // ------------------------------------------------------
+  //  logic for whether a single album should display or album list
+
+  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto}) {
     if (currentAlbum === null) {
       return (
         <AlbumList
@@ -133,18 +160,24 @@ export default class App extends React.Component {
       return (
         <AlbumDisplay
           currentAlbum={currentAlbum}
-          albums={albums}
-          selectAlbum={selectAlbum}
           currentPhoto={currentPhoto}
         />
       );
     }
   }
 
+  // ------------------------------------------------------
+
   render() {
     return (
       <div>
-        <Navbar addPhoto={this.addPhoto.bind(this)} currentUser={this.state.currentUser} selectAlbum={this.setSelectedAlbum.bind(this)} getAlbum={this.getSelectedAlbum.bind(this)}/>
+        <Navbar
+          currentUser={this.state.currentUser}
+          addPhoto={this.addPhoto.bind(this)}
+          getAlbum={this.getSelectedAlbum.bind(this)}
+          selectAlbum={this.setSelectedAlbum.bind(this)}
+        />
+
         <div className="container-fluid">
           <this.renderPage
             currentAlbum={this.state.currentAlbum}

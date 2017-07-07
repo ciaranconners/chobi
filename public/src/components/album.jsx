@@ -7,12 +7,6 @@ Render an individual album row with the first 4 photos to the App for each album
 -------------------------------*/
 
 const Album = ({album, selectAlbum}) => {
-  const photos = album.photos.map((photo, i) => {
-    if(i < 4) {
-      return (<div className="col-md-3" onClick={() => { selectAlbum(album, i); }}><Photo photo={photo}/></div>);
-    }
-  });
-
   return (
     <div className="album-with-title">
       <div className="row">
@@ -21,9 +15,17 @@ const Album = ({album, selectAlbum}) => {
         </div>
       </div>
 
-      <div className="row album-row">
-        {photos}
-      </div>
+      <div className="row album-row">{
+        album.photos.map((photo, i) => {
+          if(i < 4) {
+            return (
+              <div className="col-md-3" onClick={() => { selectAlbum(album, i); }}>
+                <Photo photo={photo}/>
+              </div>
+            );
+          }
+        })
+      }</div>
     </div>
   );
 };

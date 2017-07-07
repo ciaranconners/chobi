@@ -19,6 +19,8 @@
         event.preventDefault();
         $(this).ekkoLightbox();
     });
+
+    // Cannot include this in albumPhotoDisplay because of bootstrap+react issues
     var shouldMove = false;
     var startStopCarousel = function() {
       if (shouldMove === true) {
