@@ -76,8 +76,34 @@ export default class App extends React.Component {
   }
 
   selectAlbum(album, photo) {
+    console.log('fired selectAlbum');
     let photoNum = photo || 0;
     this.setState({currentAlbum: album, currentPhoto: photoNum});
+  }
+
+  deleteAlbum(albumIndex) {
+    var helper = function() {
+      // COMMENT/UNCOMMENT THIS TO MAKE IT ACTUALLY DELETE
+      $.ajax({
+        type: 'PUT',
+        url: '/user/' + this.state.currentUser._id,
+        data: {albums: this.state.albums},
+        success: function(data) {
+          console.log('success, i think');
+          console.log('and some data', data);
+        },
+        error: function(err) {
+          console.error('error', err);
+        }.bind(this)
+      });
+    }
+
+    // filters out the album to delete by the index and updates the state
+    if (confirm('really?') === true) {
+      this.setState({
+        albums: this.state.albums.filter((item, index) => index !== albumIndex)
+      }, helper);
+    }
   }
 
   componentDidMount() {
@@ -94,12 +120,13 @@ export default class App extends React.Component {
     });
   }
 
-  renderPage({currentAlbum, albums, selectAlbum, currentPhoto}) { //logic for whether a single album should display or album list
+  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto}) { //logic for whether a single album should display or album list
     if (currentAlbum === null) {
       return (
         <AlbumList
           albums={albums}
           selectAlbum={selectAlbum}
+          deleteAlbum={deleteAlbum}
         />
       );
     } else {
@@ -123,6 +150,7 @@ export default class App extends React.Component {
             currentAlbum={this.state.currentAlbum}
             albums={this.state.albums}
             selectAlbum={this.selectAlbum.bind(this)}
+            deleteAlbum={this.deleteAlbum.bind(this)}
             currentPhoto={this.state.currentPhoto}
           />
         </div>
