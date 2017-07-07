@@ -7,7 +7,7 @@ Render Navbar to top of page:
   -calls on PhotoForm
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum}) => {
   return (
 
 <nav className="navbar navbar-default navbar-fixed-top">
@@ -29,7 +29,7 @@ const Navbar = ({addPhoto, currentUser}) => {
         <li className="dropdown">
           <a className="dropdown-toggle" href="#" data-toggle="dropdown">Upload <span className="caret"></span></a>
           <div className="dropdown-menu">
-            <PhotoForm addPhoto={addPhoto} currentUser={currentUser}/>
+            <PhotoForm addPhoto={addPhoto} currentUser={currentUser} selectAlbum={selectAlbum} getAlbum={getAlbum}/>
           </div>
         </li>
 

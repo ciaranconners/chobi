@@ -23,8 +23,22 @@ export default class App extends React.Component {
       currentUser: {
         albums: []
       },
-      displayUser: {}
+      displayUser: {},
+      selectedAlbum: 'All Photos'
     };
+  }
+
+  // getAlbumNames() {
+  //   var names = this.state.albums.map(function(album) { return album.name});
+  //   this.setState({'albumList', names});
+  // }
+
+  setSelectedAlbum(name) {
+    this.setState({'selectedAlbum': name});
+  }
+
+  getSelectedAlbum() {
+    return this.state.selectedAlbum;
   }
 
   addPhoto(photo, albumName, description, newAlbumName) {
@@ -72,6 +86,7 @@ export default class App extends React.Component {
       url: '/user/' + this.state.currentUser,
       success: function(data) {
         this.setState({albums: data.albums, currentUser: data, displayUser: data});
+        //this.getAlbumNames();
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -102,7 +117,7 @@ export default class App extends React.Component {
   render() {
     return (
       <div>
-        <Navbar addPhoto={this.addPhoto.bind(this)} currentUser={this.state.currentUser}/>
+        <Navbar addPhoto={this.addPhoto.bind(this)} currentUser={this.state.currentUser} selectAlbum={this.setSelectedAlbum.bind(this)} getAlbum={this.getSelectedAlbum.bind(this)}/>
         <div className="container-fluid">
           <this.renderPage
             currentAlbum={this.state.currentAlbum}
@@ -115,4 +130,3 @@ export default class App extends React.Component {
     );
   }
 }
-
