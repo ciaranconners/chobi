@@ -21,18 +21,29 @@
     });
 
     // Cannot include this in albumPhotoDisplay because of bootstrap+react issues
-    var shouldMove = false;
+    var shouldMove = true;
     var startStopCarousel = function() {
+      window.clickNext = function() {
+        console.log('click..');
+        console.log(' ');
+        $('#myCarousel > a.carousel-control.right').click();
+      };
+
+      // change this variable to set a new interval for the slideshow speed
+      window.intervalInMilliseconds = 3000;
+
       if (shouldMove === true) {
-        $('.carousel').carousel('cycle');
+        console.log('about to start the interval');
+        var myIntv = setInterval(clickNext, intervalInMilliseconds);
         $('#carouselBtn').text('Pause Slideshow');
         shouldMove = false; // set to false for next iteration
       } else {
-        $('.carousel').carousel('pause');
+        console.log('about to clear the interval');
+        clearInterval(myIntv)
         $('#carouselBtn').text('Start Slideshow');
         shouldMove = true;
       }
-    };
+    }; // End carousel movement -------------------------------------------------
   </script>
 </body>
 </html>

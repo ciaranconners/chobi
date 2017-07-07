@@ -21,7 +21,7 @@ body {
   display: none;
 }
 
-.carousel{
+.carousel {
   background-color: #5486a5;
   margin-top: 20px;
   width: auto;
@@ -39,11 +39,19 @@ body {
   max-height: 500px;
 }
 
+#carouselBtn {
+  margin: 5px;
+}
+
+.indicators-container {
+  padding-top: 25px;
+}
+
 .carousel-indicators {
-  height: 10px;
-  right: 50%;
-  width: 92%;
-  position: static;
+  position: relative;
+  left: 0;
+  width: auto;
+  margin-left: 0;
 }
 
 .carousel-indicators li {
