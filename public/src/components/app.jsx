@@ -44,7 +44,7 @@ export default class App extends React.Component {
       },
       displayUser: {},
       selectedAlbum: 'All Photos',
-      searchFriend: '',
+      featuredFriend: '',
       friends: []
     };
   }
@@ -193,7 +193,8 @@ export default class App extends React.Component {
       url: '/user/showFriendAlbums/' + friend,
       success: function(data) {
         console.log(data);
-        this.setState({albums: data});
+        this.setState({albums: data, featuredFriend: friend});
+        console.log(this.state.featuredFriend);
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -245,7 +246,7 @@ export default class App extends React.Component {
       type: 'GET',
       url: '/user/' + this.state.currentUser,
       success: function(data) {
-        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends});
+        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends, featuredFriend: ''});
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -257,14 +258,17 @@ export default class App extends React.Component {
   // ------------------------------------------------------
   //  logic for whether a single album should display or album list
 
-  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto, addFriend}) {
+  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto, addFriend, featuredFriend}) {
     if (currentAlbum === null) {
       return (
+        <div>
         <AlbumList
           albums={albums}
           selectAlbum={selectAlbum}
           deleteAlbum={deleteAlbum}
+          featuredFriend={featuredFriend}
         />
+        </div>
       );
     } else {
       return (
@@ -300,6 +304,7 @@ export default class App extends React.Component {
             selectAlbum={this.selectAlbum.bind(this)}
             deleteAlbum={this.deleteAlbum.bind(this)}
             currentPhoto={this.state.currentPhoto}
+            featuredFriend={this.state.featuredFriend}
           />
         </div>
       </div>
