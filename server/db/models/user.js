@@ -12,7 +12,7 @@ const photoSchema = new Schema({
 });
 
 const albumSchema = new Schema({
-  access: [],
+  access: [], //changed this from array to boolean
   photos: [photoSchema],
   name: String,
 });
@@ -40,7 +40,7 @@ const userSchema = new Schema({
   },
   profilePic: String,
   albums: [albumSchema],
-  friends: [],
+  friends: [], // {username: patrick, status: pending / accepted, sender: chobi}
 });
 
 const User = mongoose.model('User', userSchema);

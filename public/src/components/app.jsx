@@ -43,7 +43,9 @@ export default class App extends React.Component {
         albums: []
       },
       displayUser: {},
-      selectedAlbum: 'All Photos'
+      selectedAlbum: 'All Photos',
+      searchFriend: '',
+      friends: []
     };
   }
 
@@ -92,6 +94,27 @@ export default class App extends React.Component {
     this.setState({'selectedAlbum': name});
   }
 
+  addFriend(username) {
+    var friends = this.state.currentUser.friends;
+    friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/' + this.state.currentUser.username,
+      data: {friends: friends},
+      success: function(response) {
+        this.setState({friends: response});
+      },
+      error: function(error) {
+        console.error('Error in submitting photo upload form: ', error);
+      }.bind(this)
+    });
+  }
+
+  confirmFriend() {
+
+  }
+
   // ------------------------------------------------------
   //  AlbumList stuff
 
@@ -136,18 +159,19 @@ export default class App extends React.Component {
       type: 'GET',
       url: '/user/' + this.state.currentUser,
       success: function(data) {
-        this.setState({albums: data.albums, currentUser: data, displayUser: data});
+        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends});
       }.bind(this),
       error: function(err) {
         console.error('error', err);
       }.bind(this)
     });
+
   }
 
   // ------------------------------------------------------
   //  logic for whether a single album should display or album list
 
-  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto}) {
+  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto, addFriend}) {
     if (currentAlbum === null) {
       return (
         <AlbumList
@@ -176,6 +200,8 @@ export default class App extends React.Component {
           addPhoto={this.addPhoto.bind(this)}
           getAlbum={this.getSelectedAlbum.bind(this)}
           selectAlbum={this.setSelectedAlbum.bind(this)}
+          addFriend={this.addFriend.bind(this)}
+          friends={this.state.friends}
         />
 
         <div className="container-fluid">
