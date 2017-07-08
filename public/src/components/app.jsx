@@ -54,6 +54,23 @@ export default class App extends React.Component {
 
   addPhoto(photo, albumName, description, newAlbumName) {
 
+  var helper = function() {
+    $.ajax({
+      type: 'GET',
+      url: '/user/' + this.state.currentUser,
+      success: function(data) {
+        this.setState({
+          albums: data.albums,
+          currentUser: data,
+          displayUser: data,
+          friends: data.friends
+        });
+    }.bind(this),
+    error: function(err) {
+      console.error('error', err);
+    }.bind(this)
+  });
+};
     var data = new FormData();
     data.append('photo', photo, photo.name);
 
@@ -78,16 +95,12 @@ export default class App extends React.Component {
       processData: false,
       contentType: false,
       success: function(response) {
-        this.setState({albums: response.albums, photos: response.photos});
+        this.setState({albums: response.albums, photos: response.photos}, helper);
       }.bind(this),
       error: function(error) {
         console.error('Error in submitting photo upload form: ', error);
       }.bind(this)
     });
-  }
-
-  getSelectedAlbum() {
-    return this.state.selectedAlbum;
   }
 
   setSelectedAlbum(name) {
@@ -145,7 +158,7 @@ export default class App extends React.Component {
     if (confirm('really?') === true) {
       this.setState({
         albums: this.state.albums.filter((item, index) => index !== albumIndex)
-      }, helper);
+      }, helper); // this needs
     }
   }
 
@@ -198,8 +211,8 @@ export default class App extends React.Component {
         <Navbar
           currentUser={this.state.currentUser}
           addPhoto={this.addPhoto.bind(this)}
-          getAlbum={this.getSelectedAlbum.bind(this)}
           selectAlbum={this.setSelectedAlbum.bind(this)}
+          selectedAlbum={this.state.selectedAlbum}
           addFriend={this.addFriend.bind(this)}
           friends={this.state.friends}
         />

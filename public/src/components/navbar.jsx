@@ -17,7 +17,7 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend, friends}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum}) => {
   var username;
 
   return (
@@ -68,7 +68,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend, friend
                   addPhoto={addPhoto}
                   currentUser={currentUser}
                   selectAlbum={selectAlbum}
-                  getAlbum={getAlbum}
+                  selectedAlbum={selectedAlbum}
                 />
               </div>
             </li>
