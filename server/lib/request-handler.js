@@ -70,7 +70,7 @@ requestHandler.friendUser = function(req, res) {
         // console.log("receiver ", oldUser)
         User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}).then(function(oldUser){
           // console.log("initiator ", oldUser)
-          res.send('Updated friend lists');
+          res.send(oldUser.friends);
           })
         })
       }

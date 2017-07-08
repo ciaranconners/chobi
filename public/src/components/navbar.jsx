@@ -17,7 +17,7 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend, friends}) => {
   var username;
 
   return (
@@ -37,6 +37,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend}) => {
 
           <ul className="nav navbar-nav navbar-right">
 
+
             <li><form onSubmit={(e) => {
               e.preventDefault();
               addFriend(username.value);
@@ -45,6 +46,20 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend}) => {
             <input className="searchFriend" placeholder="Enter a friend's username" ref={node2 => {
               username = node2;
             }}></input><button type="submit" value="Submit">Submit</button></form></li>
+
+
+            <li className="dropdown">
+              <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-bell"></span></button>
+              <div className="dropdown-menu">
+
+                {friends.map((friend, i) => {
+                  return (<div>{friend.username}</div>);
+                })}
+
+
+              </div>
+            </li>
+
 
             <li className="dropdown">
               <a className="dropdown-toggle" href="#" data-toggle="dropdown">Upload<span className="caret"></span></a>

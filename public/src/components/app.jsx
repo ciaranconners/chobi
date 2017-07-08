@@ -97,23 +97,22 @@ export default class App extends React.Component {
   addFriend(username) {
     var friends = this.state.currentUser.friends;
     friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
-    console.log(friends)
-
-    // var friend = {username: username, status: 'pending', sender: this.state.currentUser.username};
 
     $.ajax({
       type: 'PUT',
       url: '/user/' + this.state.currentUser.username,
       data: {friends: friends},
       success: function(response) {
-        // this.setState({friends: response.albums, photos: response.photos}); update friends state
-        console.log('and some data', response);
+        this.setState({friends: response});
       },
       error: function(error) {
         console.error('Error in submitting photo upload form: ', error);
       }.bind(this)
     });
-    console.log("current user ", this.state)
+  }
+
+  confirmFriend() {
+
   }
 
   // ------------------------------------------------------
@@ -160,7 +159,7 @@ export default class App extends React.Component {
       type: 'GET',
       url: '/user/' + this.state.currentUser,
       success: function(data) {
-        this.setState({albums: data.albums, currentUser: data, displayUser: data});
+        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends});
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -202,6 +201,7 @@ export default class App extends React.Component {
           getAlbum={this.getSelectedAlbum.bind(this)}
           selectAlbum={this.setSelectedAlbum.bind(this)}
           addFriend={this.addFriend.bind(this)}
+          friends={this.state.friends}
         />
 
         <div className="container-fluid">
