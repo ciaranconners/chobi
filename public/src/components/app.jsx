@@ -123,13 +123,36 @@ export default class App extends React.Component {
         }
       }.bind(this),
       error: function(error) {
-        console.error('Error in submitting photo upload form: ', error);
+        console.error('Error in adding friend', error);
       }.bind(this)
     });
   }
 
-  confirmFriend() {
+  confirmFriend(friend) {
+    var friends = this.state.currentUser.friends;
 
+    friends.forEach(function(userFriend) {
+      if (userFriend.username === friend) {
+        userFriend.status = 'accepted';
+      }
+    });
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/confirmFriends/' + this.state.currentUser.username,
+      data: {addedFriend: friend, friends: friends},
+      success: function(response) {
+        console.log(response);
+        this.setState({friends: response});
+      }.bind(this),
+      error: function(error) {
+        console.error('Error in adding friend', error);
+      }.bind(this)
+    });
+  }
+
+  denyFriend(friend) {
+    console.log(friend);
   }
 
   // ------------------------------------------------------
@@ -219,6 +242,8 @@ export default class App extends React.Component {
           selectedAlbum={this.state.selectedAlbum}
           addFriend={this.addFriend.bind(this)}
           friends={this.state.friends}
+          confirmFriend={this.confirmFriend.bind(this)}
+          denyFriend={this.denyFriend.bind(this)}
         />
 
         <div className="container-fluid">

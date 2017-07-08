@@ -37,6 +37,8 @@ app.get('/user/:username', requestHandler.getUser);
 
 app.put('/user/friends/:username', requestHandler.friendUser);
 
+app.put('/user/confirmFriends/:username', requestHandler.confirmFriend);
+
 app.put('/user/:id', requestHandler.updateUser);
 
 app.post('/user/upload', requestHandler.handleUploadPhoto);

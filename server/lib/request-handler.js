@@ -77,6 +77,27 @@ requestHandler.friendUser = function(req, res) {
     })
   }
 
+requestHandler.confirmFriend = function(req, res) {
+  var initiator = req.session.username;
+  //console.log(req.body);
+  var receiver = req.body.addedFriend;
+
+  User.findOne({username: receiver}).then(function(receiver) {
+    receiver.friends.forEach(function(friend) {
+      if (friend.username === initiator) {
+        friend.status = 'accepted';
+      }
+    });
+    User.findOneAndUpdate({username: receiver}, {friends: receiver.friends}, {new: true}).then(function(oldUser){
+      console.log("receiver ", oldUser)
+      User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}).then(function(oldUser){
+        console.log("initiator ", oldUser)
+        res.send(oldUser.friends);
+        })
+      })
+    })
+  }
+
 requestHandler.handleUploadPhoto = (req, res) => {
   // function from multer - used to parse multi-part form data
   upload(req, res, err => {
