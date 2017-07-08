@@ -38,11 +38,25 @@ requestHandler.getUser = function (req, res) {
       if (error) {
         res.status(500).send(error);
       } else {
-        user.albums = showAccessibleAlbums(currentUsername, user.albums);
-        res.json(user);
+        res.json(user.albums);
       }
     });
   }
+};
+
+requestHandler.showFriendAlbums = function (req, res) {
+  //console.log(req.params.username);
+
+  const queryUsername = req.params.username;
+
+  User.findOne({ username: queryUsername }, { password: 0, friends: 0, email: 0 }, (error, user) => { // eslint-disable-line
+    if (error) {
+      res.status(500).send(error);
+    } else {
+      res.json(user.albums);
+    }
+  });
+
 };
 
 requestHandler.updateUser = function(req, res) {

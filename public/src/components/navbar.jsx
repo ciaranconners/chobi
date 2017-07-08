@@ -17,7 +17,7 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum, confirmFriend, denyFriend}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum, confirmFriend, denyFriend, showAlbums}) => {
   var username;
 
   return (
@@ -62,7 +62,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
                 <p>Friends</p>
                 {friends.map((friend) => {
                   if (friend.status === 'accepted') {
-                    return (<div>{friend.username}<button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    return (<div>{friend.username}<button onClick={() => {showAlbums(friend.username)}}>Show albums</button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
                     }
                   }
                 )}

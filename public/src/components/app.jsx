@@ -186,6 +186,21 @@ export default class App extends React.Component {
     });
   }
 
+  showAlbums(friend) {
+    console.log('friend albums');
+    $.ajax({
+      type: 'GET',
+      url: '/user/showFriendAlbums/' + friend,
+      success: function(data) {
+        console.log(data);
+        this.setState({albums: data});
+      }.bind(this),
+      error: function(err) {
+        console.error('error', err);
+      }.bind(this)
+    });
+  }
+
   // ------------------------------------------------------
   //  AlbumList stuff
 
@@ -275,6 +290,7 @@ export default class App extends React.Component {
           friends={this.state.friends}
           confirmFriend={this.confirmFriend.bind(this)}
           denyFriend={this.denyFriend.bind(this)}
+          showAlbums={this.showAlbums.bind(this)}
         />
 
         <div className="container-fluid">
