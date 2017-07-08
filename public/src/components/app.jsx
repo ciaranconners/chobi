@@ -158,7 +158,7 @@ export default class App extends React.Component {
     if (confirm('really?') === true) {
       this.setState({
         albums: this.state.albums.filter((item, index) => index !== albumIndex)
-      }, helper);
+      }, helper); // this needs
     }
   }
 
