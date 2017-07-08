@@ -98,7 +98,7 @@ requestHandler.confirmFriend = function(req, res) {
     })
   }
 
-requestHandler.denyFriend = function(req, res) {
+requestHandler.denyFriend = function(req, res) { //Check for bug when all friends are deleted
   var initiator = req.session.username;
   //console.log(req.body);
   var receiver = req.body.deniedFriend;

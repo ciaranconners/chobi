@@ -109,23 +109,34 @@ export default class App extends React.Component {
 
   addFriend(username) {
     var friends = this.state.currentUser.friends;
-    friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
 
-    $.ajax({
-      type: 'PUT',
-      url: '/user/friends/' + this.state.currentUser.username,
-      data: {friends: friends},
-      success: function(response) {
-        if (response === 'User not found') {
-          alert('User not found');
-        } else {
-          this.setState({friends: response});
-        }
-      }.bind(this),
-      error: function(error) {
-        console.error('Error in adding friend', error);
-      }.bind(this)
+    var newFriend = true;
+
+    friends.forEach(function(friend) {
+      if (friend.username === username) {
+        alert('You\'ve already friended this person');
+        newFriend = false;
+      }
     });
+    if (newFriend) {
+      friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
+
+      $.ajax({
+        type: 'PUT',
+        url: '/user/friends/' + this.state.currentUser.username,
+        data: {friends: friends},
+        success: function(response) {
+          if (response === 'User not found') {
+            alert('User not found');
+          } else {
+            this.setState({friends: response});
+          }
+        }.bind(this),
+        error: function(error) {
+          console.error('Error in adding friend', error);
+        }.bind(this)
+      });
+    }
   }
 
   confirmFriend(friend) {
@@ -156,7 +167,7 @@ export default class App extends React.Component {
 
     friends.forEach(function(userFriend, i) {
       if (userFriend.username === friend) {
-        friends.splice(i, 1);
+        friends.splice(i, 1); //Check for bug when all friends are deleted
       }
     });
 
