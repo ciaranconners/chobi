@@ -39,6 +39,8 @@ app.put('/user/friends/:username', requestHandler.friendUser);
 
 app.put('/user/confirmFriends/:username', requestHandler.confirmFriend);
 
+app.put('/user/denyFriends/:username', requestHandler.denyFriend);
+
 app.put('/user/:id', requestHandler.updateUser);
 
 app.post('/user/upload', requestHandler.handleUploadPhoto);

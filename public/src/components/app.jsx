@@ -152,7 +152,27 @@ export default class App extends React.Component {
   }
 
   denyFriend(friend) {
-    console.log(friend);
+    var friends = this.state.currentUser.friends;
+
+    friends.forEach(function(userFriend, i) {
+      if (userFriend.username === friend) {
+        friends.splice(i, 1);
+      }
+    });
+
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/denyFriends/' + this.state.currentUser.username,
+      data: {deniedFriend: friend, friends: friends},
+      success: function(response) {
+        console.log(response);
+        this.setState({friends: response});
+      }.bind(this),
+      error: function(error) {
+        console.error('Error in denying friend', error);
+      }.bind(this)
+    });
   }
 
   // ------------------------------------------------------
