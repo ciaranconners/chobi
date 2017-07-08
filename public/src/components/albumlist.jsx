@@ -20,7 +20,6 @@ const AlbumList = ({albums, selectAlbum, deleteAlbum, featuredFriend}) => {
         return (
           <div>
             <Album album={album} selectAlbum={selectAlbum} key={i} />
-            <button onClick={() => { deleteAlbum(i); }}>Delete Album</button>
           </div>
         );
       })
