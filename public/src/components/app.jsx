@@ -116,8 +116,12 @@ export default class App extends React.Component {
       url: '/user/friends/' + this.state.currentUser.username,
       data: {friends: friends},
       success: function(response) {
-        this.setState({friends: response});
-      },
+        if (response === 'User not found') {
+          alert('User not found');
+        } else {
+          this.setState({friends: response});
+        }
+      }.bind(this),
       error: function(error) {
         console.error('Error in submitting photo upload form: ', error);
       }.bind(this)
