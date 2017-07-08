@@ -100,7 +100,7 @@ export default class App extends React.Component {
 
     $.ajax({
       type: 'PUT',
-      url: '/user/' + this.state.currentUser.username,
+      url: '/user/friends/' + this.state.currentUser.username,
       data: {friends: friends},
       success: function(response) {
         this.setState({friends: response});
