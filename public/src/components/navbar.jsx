@@ -17,7 +17,9 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum, addFriend}) => {
+  var username;
+
   return (
     <nav className="navbar navbar-default navbar-fixed-top">
       <div className="container-fluid">
@@ -34,6 +36,15 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, getAlbum}) => {
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
           <ul className="nav navbar-nav navbar-right">
+
+            <li><form onSubmit={(e) => {
+              e.preventDefault();
+              addFriend(username.value);
+              username.value = '';
+            }}>
+            <input className="searchFriend" placeholder="Enter a friend's username" ref={node2 => {
+              username = node2;
+            }}></input><button type="submit" value="Submit">Submit</button></form></li>
 
             <li className="dropdown">
               <a className="dropdown-toggle" href="#" data-toggle="dropdown">Upload<span className="caret"></span></a>
