@@ -35,7 +35,13 @@ app.get('/', authenticate);
 // Sends User object to frontend - contains all info (albums, etc.)
 app.get('/user/:username', requestHandler.getUser);
 
+app.get('/user/showFriendAlbums/:username', requestHandler.showFriendAlbums);
+
 app.put('/user/friends/:username', requestHandler.friendUser);
+
+app.put('/user/confirmFriends/:username', requestHandler.confirmFriend);
+
+app.put('/user/denyFriends/:username', requestHandler.denyFriend);
 
 app.put('/user/:id', requestHandler.updateUser);
 

@@ -44,7 +44,7 @@ export default class App extends React.Component {
       },
       displayUser: {},
       selectedAlbum: 'All Photos',
-      searchFriend: '',
+      featuredFriend: '',
       friends: []
     };
   }
@@ -109,23 +109,97 @@ export default class App extends React.Component {
 
   addFriend(username) {
     var friends = this.state.currentUser.friends;
-    friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
+
+    var newFriend = true;
+
+    friends.forEach(function(friend) {
+      if (friend.username === username) {
+        alert('You\'ve already friended this person');
+        newFriend = false;
+      }
+    });
+    if (newFriend) {
+      friends.push({username: username, status: 'pending', sender: this.state.currentUser.username});
+
+      $.ajax({
+        type: 'PUT',
+        url: '/user/friends/' + this.state.currentUser.username,
+        data: {friends: friends},
+        success: function(response) {
+          if (response === 'User not found') {
+            alert('User not found');
+          } else {
+            this.setState({friends: response});
+          }
+        }.bind(this),
+        error: function(error) {
+          console.error('Error in adding friend', error);
+        }.bind(this)
+      });
+    }
+  }
+
+  confirmFriend(friend) {
+    var friends = this.state.currentUser.friends;
+
+    friends.forEach(function(userFriend) {
+      if (userFriend.username === friend) {
+        userFriend.status = 'accepted';
+      }
+    });
 
     $.ajax({
       type: 'PUT',
-      url: '/user/friends/' + this.state.currentUser.username,
-      data: {friends: friends},
+      url: '/user/confirmFriends/' + this.state.currentUser.username,
+      data: {addedFriend: friend, friends: friends},
       success: function(response) {
+        console.log(response);
         this.setState({friends: response});
-      },
+      }.bind(this),
       error: function(error) {
-        console.error('Error in submitting photo upload form: ', error);
+        console.error('Error in adding friend', error);
       }.bind(this)
     });
   }
 
-  confirmFriend() {
+  denyFriend(friend) {
+    var friends = this.state.currentUser.friends;
 
+    friends.forEach(function(userFriend, i) {
+      if (userFriend.username === friend) {
+        friends.splice(i, 1); //Check for bug when all friends are deleted
+      }
+    });
+
+
+    $.ajax({
+      type: 'PUT',
+      url: '/user/denyFriends/' + this.state.currentUser.username,
+      data: {deniedFriend: friend, friends: friends},
+      success: function(response) {
+        console.log(response);
+        this.setState({friends: response});
+      }.bind(this),
+      error: function(error) {
+        console.error('Error in denying friend', error);
+      }.bind(this)
+    });
+  }
+
+  showAlbums(friend) {
+    console.log('friend albums');
+    $.ajax({
+      type: 'GET',
+      url: '/user/showFriendAlbums/' + friend,
+      success: function(data) {
+        console.log(data);
+        this.setState({albums: data, featuredFriend: friend});
+        console.log(this.state.featuredFriend);
+      }.bind(this),
+      error: function(err) {
+        console.error('error', err);
+      }.bind(this)
+    });
   }
 
   // ------------------------------------------------------
@@ -172,7 +246,7 @@ export default class App extends React.Component {
       type: 'GET',
       url: '/user/' + this.state.currentUser,
       success: function(data) {
-        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends});
+        this.setState({albums: data.albums, currentUser: data, displayUser: data, friends: data.friends, featuredFriend: ''});
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -184,14 +258,17 @@ export default class App extends React.Component {
   // ------------------------------------------------------
   //  logic for whether a single album should display or album list
 
-  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto, addFriend}) {
+  renderPage({currentAlbum, albums, selectAlbum, deleteAlbum, currentPhoto, addFriend, featuredFriend}) {
     if (currentAlbum === null) {
       return (
+        <div>
         <AlbumList
           albums={albums}
           selectAlbum={selectAlbum}
           deleteAlbum={deleteAlbum}
+          featuredFriend={featuredFriend}
         />
+        </div>
       );
     } else {
       return (
@@ -215,6 +292,9 @@ export default class App extends React.Component {
           selectedAlbum={this.state.selectedAlbum}
           addFriend={this.addFriend.bind(this)}
           friends={this.state.friends}
+          confirmFriend={this.confirmFriend.bind(this)}
+          denyFriend={this.denyFriend.bind(this)}
+          showAlbums={this.showAlbums.bind(this)}
         />
 
         <div className="container-fluid">
@@ -224,6 +304,7 @@ export default class App extends React.Component {
             selectAlbum={this.selectAlbum.bind(this)}
             deleteAlbum={this.deleteAlbum.bind(this)}
             currentPhoto={this.state.currentPhoto}
+            featuredFriend={this.state.featuredFriend}
           />
         </div>
       </div>

@@ -17,7 +17,7 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum, confirmFriend, denyFriend, showAlbums}) => {
   var username;
 
   return (
@@ -51,11 +51,21 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
             <li className="dropdown">
               <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-bell"></span></button>
               <div className="dropdown-menu">
+                <p>Friend Requests</p>
+                {friends.map((friend) => {
+                  if (friend.status === 'pending') {
+                    return (<div>{friend.username}<button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    }
+                  }
+                )}
 
-                {friends.map((friend, i) => {
-                  return (<div>{friend.username}</div>);
-                })}
-
+                <p>Friends</p>
+                {friends.map((friend) => {
+                  if (friend.status === 'accepted') {
+                    return (<div>{friend.username}<button onClick={() => {showAlbums(friend.username)}}>Show albums</button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    }
+                  }
+                )}
 
               </div>
             </li>
