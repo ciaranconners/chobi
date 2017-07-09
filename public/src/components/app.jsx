@@ -49,30 +49,69 @@ export default class App extends React.Component {
     };
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // ------------------------------------------------------
   //  Navbar stuff
 
   addPhoto(photo, albumName, description, newAlbumName) {
 
-  var helper = function() {
-    $.ajax({
-      type: 'GET',
-      url: '/user/' + this.state.currentUser,
-      success: function(data) {
-        this.setState({
-          albums: data.albums,
-          currentUser: data,
-          displayUser: data,
-          friends: data.friends
-        });
-    }.bind(this),
-    error: function(err) {
-      console.error('error', err);
-    }.bind(this)
-  });
-};
+    var helper = function() {
+      $.ajax({
+        type: 'GET',
+        url: '/user/' + this.state.currentUser,
+        success: function(data) {
+          this.setState({
+            albums: data.albums,
+            currentUser: data,
+            displayUser: data,
+            friends: data.friends
+          });
+        }.bind(this),
+        error: function(err) {
+          console.error('error', err);
+        }.bind(this)
+      });
+    };
+
     var data = new FormData();
-    data.append('photo', photo, photo.name);
+
+    for (let i = 0; i < photo.length; i++) {
+      console.log('photo from form: ', photo);
+      data.append('photo', photo[i], photo[i].name);
+    }
+    // data.append('photo', photo, photo.name);
 
     if(albumName === '__newalbum') {
       if(newAlbumName === '') {
@@ -102,6 +141,42 @@ export default class App extends React.Component {
       }.bind(this)
     });
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   setSelectedAlbum(name) {
     this.setState({'selectedAlbum': name});
