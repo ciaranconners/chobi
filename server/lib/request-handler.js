@@ -120,7 +120,7 @@ requestHandler.denyFriend = function(req, res) { //Check for bug when all friend
   User.findOne({username: receiver}).then(function(receiver) {
     receiver.friends.forEach(function(friend, i) {
       if (friend.username === initiator) {
-        receiver.friends.splice(i, 1);
+        friend.status = 'denied';
       }
     });
     User.findOneAndUpdate({username: receiver}, {friends: receiver.friends}, {new: true}).then(function(oldUser){

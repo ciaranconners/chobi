@@ -51,15 +51,23 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
             <li className="dropdown">
               <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-bell"></span></button>
               <div className="dropdown-menu">
-                <p>Friend Requests</p>
+                <strong><p>Incoming Friend Requests</p></strong>
                 {friends.map((friend) => {
-                  if (friend.status === 'pending') {
+                  if (friend.status === 'pending' && friend.sender !== currentUser.username) {
                     return (<div>{friend.username}<button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
                     }
                   }
                 )}
 
-                <p>Friends</p>
+                <strong><p>Sent Friend Requests</p></strong>
+                {friends.map((friend) => {
+                  if (friend.status === 'pending' && friend.sender === currentUser.username) {
+                    return (<div>{friend.username}<button onClick={() => {denyFriend(friend.username)}}>Cancel request</button></div>);
+                    }
+                  }
+                )}
+
+                <strong><p>Friends</p></strong>
                 {friends.map((friend) => {
                   if (friend.status === 'accepted') {
                     return (<div>{friend.username}<button onClick={() => {showAlbums(friend.username)}}>Show albums</button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);

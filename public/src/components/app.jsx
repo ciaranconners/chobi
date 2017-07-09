@@ -113,8 +113,11 @@ export default class App extends React.Component {
     var newFriend = true;
 
     friends.forEach(function(friend) {
-      if (friend.username === username) {
-        alert('You\'ve already friended this person');
+      if (friend.username === username && friend.status === 'pending') {
+        alert('You\'ve already requested this person');
+        newFriend = false;
+      } else if (friend.username === username && friend.status === 'accepted') {
+        alert('You\'re already friends with this person');
         newFriend = false;
       }
     });
@@ -167,7 +170,7 @@ export default class App extends React.Component {
 
     friends.forEach(function(userFriend, i) {
       if (userFriend.username === friend) {
-        friends.splice(i, 1); //Check for bug when all friends are deleted
+        userFriend.status = 'denied'; //Check for bug when all friends are deleted
       }
     });
 
