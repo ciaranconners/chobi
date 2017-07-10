@@ -114,6 +114,25 @@ export default class App extends React.Component {
   }
 
   addFriend(username) {
+
+    var helper = function() {
+      $.ajax({
+        type: 'GET',
+        url: '/user/' + this.state.currentUser,
+        success: function(data) {
+          this.setState({
+            albums: data.albums,
+            currentUser: data,
+            displayUser: data,
+            friends: data.friends
+          });
+        }.bind(this),
+        error: function(err) {
+          console.error('error', err);
+        }.bind(this)
+      });
+    };
+
     var friends = this.state.currentUser.friends;
 
     var newFriend = true;
@@ -146,7 +165,7 @@ export default class App extends React.Component {
           if (response === 'User not found') {
             alert('User not found');
           } else {
-            this.setState({friends: response});
+            this.setState({friends: response}, helper);
           }
         }.bind(this),
         error: function(error) {
@@ -157,6 +176,24 @@ export default class App extends React.Component {
   }
 
   confirmFriend(friend) {
+
+    var helper = function() {
+      $.ajax({
+        type: 'GET',
+        url: '/user/' + this.state.currentUser,
+        success: function(data) {
+          this.setState({
+            albums: data.albums,
+            currentUser: data,
+            displayUser: data,
+            friends: data.friends
+          });
+        }.bind(this),
+        error: function(err) {
+          console.error('error', err);
+        }.bind(this)
+      });
+    };
     var friends = this.state.currentUser.friends;
 
     friends.forEach(function(userFriend) {
@@ -171,7 +208,7 @@ export default class App extends React.Component {
       data: {addedFriend: friend, friends: friends},
       success: function(response) {
         // console.log(response);
-        this.setState({friends: response});
+        this.setState({friends: response}, helper);
       }.bind(this),
       error: function(error) {
         console.error('Error in adding friend', error);
@@ -180,6 +217,24 @@ export default class App extends React.Component {
   }
 
   denyFriend(friend) {
+
+    var helper = function() {
+      $.ajax({
+        type: 'GET',
+        url: '/user/' + this.state.currentUser,
+        success: function(data) {
+          this.setState({
+            albums: data.albums,
+            currentUser: data,
+            displayUser: data,
+            friends: data.friends
+          });
+        }.bind(this),
+        error: function(err) {
+          console.error('error', err);
+        }.bind(this)
+      });
+    };
     var friends = this.state.currentUser.friends;
 
     friends.forEach(function(userFriend, i) {
@@ -195,7 +250,7 @@ export default class App extends React.Component {
       data: {deniedFriend: friend, friends: friends},
       success: function(response) {
         // console.log(response);
-        this.setState({friends: response});
+        this.setState({friends: response}, helper);
       }.bind(this),
       error: function(error) {
         console.error('Error in denying friend', error);

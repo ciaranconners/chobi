@@ -23,6 +23,8 @@
     // Cannot include this in albumPhotoDisplay because of bootstrap+react issues
     var shouldMove = true;
     var startStopCarousel = function() {
+      // due to limitations with bootstrap, no way to stop following carousel once begun:
+      // in future => implement carousel using either javascript or react-bootstrap
       window.clickNext = function() {
         $('#myCarousel > a.carousel-control.right').click();
       };
