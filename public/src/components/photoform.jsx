@@ -31,15 +31,16 @@ const PhotoForm = ({addPhoto, currentUser, selectAlbum, getAlbum, selectedAlbum}
   });
 
   return (
-    <form method="post" encType="multpart/form-data" onSubmit={(e) => {
+    <form className="photo-form" method="post" encType="multpart/form-data" onSubmit={(e) => {
       e.preventDefault();
       selectAlbum(newName.value);
-      // albums.push(newName.value);
-      // console.log(newName.value);
       addPhoto(photo.files, selectedAlbum, desc.value, newName.value);
       photo.value = '';
       desc.value = '';
       newName.value = '';
+      $('.photo-form option:eq(0)').attr('selected','selected');
+      $('.new-name-hidden').hide();
+
     }}>
       <div className="form-group">
         <input id="photo" className="form-control" type="file" multiple name="photo" placeholder="Upload Photo" ref={node => {

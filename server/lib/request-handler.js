@@ -67,7 +67,6 @@ requestHandler.updateUser = function(req, res) {
 
   User.findByIdAndUpdate({_id: id}, {albums: albums}, {new: true})
   .then(function(updatedUserData) {
-    console.log(updatedUserData);
     res.json(updatedUserData);
   });
 };
@@ -101,7 +100,7 @@ requestHandler.friendUser = function(req, res) {
 
 requestHandler.confirmFriend = function(req, res) {
   var initiator = req.session.username;
-  console.log('====================', req.body);
+  // console.log('====================', req.body);
   var receiver = req.body.addedFriend;
 
   User.findOne({username: receiver}, function(err, foundReceiver) {
@@ -128,7 +127,7 @@ requestHandler.confirmFriend = function(req, res) {
       });
     }
   });
-}
+};
 
 requestHandler.denyFriend = function(req, res) {
     var initiator = req.session.username;
@@ -158,7 +157,7 @@ requestHandler.denyFriend = function(req, res) {
         });
       }
     });
-  }
+  };
 
 requestHandler.handleUploadPhoto = (req, res) => {
   // function from multer - used to parse multi-part form data
@@ -173,7 +172,7 @@ requestHandler.handleUploadPhoto = (req, res) => {
       for (let x of req.files) {
         buffers.push(x.buffer);
       }
-      console.log(buffers); //=> coming through correctly for 1 and 2 but not more files
+      // console.log(buffers); //=> coming through correctly
       // .uploadPhotoBuffer from Cloudinary - req.file.buffer from multer
 
       var cloudinaryCall = function(buffer, callback) {
@@ -246,9 +245,8 @@ requestHandler.handleUploadPhoto = (req, res) => {
         });
       };
       asyncEach(buffers, cloudinaryCall, function() {
-        console.log('success: photographs saved to cloud');
         User.findOne({username: req.session.username}, function(err, user) {
-          console.log('sending back updated user with fresh photos');
+          console.log('sending back updated user with newly saved photos');
           res.status(200).json(user);
         });
       });
