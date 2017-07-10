@@ -17,7 +17,7 @@ _________________________________
 
 -------------------------------*/
 
-const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum}) => {
+const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selectedAlbum, confirmFriend, denyFriend, showAlbums}) => {
   var username;
 
   return (
@@ -31,6 +31,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
             <span className="icon-bar"></span>
           </button>
           <a className="navbar-brand" href="/"><img src="../images/Chobi.png" /></a>
+          <h5 className="navbar-brand">Welcome, {currentUser.username}!</h5>
         </div>
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -49,13 +50,31 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
 
 
             <li className="dropdown">
-              <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-bell"></span></button>
+              <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-user"></span></button>
               <div className="dropdown-menu">
+                <strong><p>Incoming Friend Requests</p></strong>
+                {friends.map((friend) => {
+                  if (friend.status === 'pending' && friend.sender !== currentUser.username) {
+                    return (<div>{friend.username}<button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    }
+                  }
+                )}
 
-                {friends.map((friend, i) => {
-                  return (<div>{friend.username}</div>);
-                })}
+                <strong><p>Sent Friend Requests</p></strong>
+                {friends.map((friend) => {
+                  if (friend.status === 'pending' && friend.sender === currentUser.username) {
+                    return (<div>{friend.username}<button onClick={() => {denyFriend(friend.username)}}>Cancel request</button></div>);
+                    }
+                  }
+                )}
 
+                <strong><p>Friends</p></strong>
+                {friends.map((friend) => {
+                  if (friend.status === 'accepted') {
+                    return (<div>{friend.username}<button onClick={() => {showAlbums(friend.username)}}>Show albums</button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    }
+                  }
+                )}
 
               </div>
             </li>
