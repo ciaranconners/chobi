@@ -5,9 +5,10 @@ const _ = require('underscore');
 const path = require('path');
 const bcrypt = require('bcrypt-nodejs');
 const Promise = require('bluebird');
+const asyncEach = require('async/each');
 
 // Parses multi-part data from form - used to extract image data
-const upload = multer().single('photo'); // 'photo' indicates the name attribute on the multpart/form element (they must be the same)
+const upload = multer().array('photo', 10); // 'photo' indicates the name attribute on the multpart/form element (they must be the same)
 const requestHandler = {};
 
 // Unused - For private multi-user sharing (not yet implemented)
@@ -66,10 +67,10 @@ requestHandler.updateUser = function(req, res) {
 
   User.findByIdAndUpdate({_id: id}, {albums: albums}, {new: true})
   .then(function(updatedUserData) {
+    console.log(updatedUserData);
     res.json(updatedUserData);
   });
-
-}
+};
 
 requestHandler.friendUser = function(req, res) {
   var initiator = req.session.username;
@@ -85,11 +86,12 @@ requestHandler.friendUser = function(req, res) {
         User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}).then(function(oldUser){
           // console.log("initiator ", oldUser)
           res.send(oldUser.friends);
-          })
-        })
+          });
+        });
       }
-    })
-  }
+    });
+  };
+
 
 requestHandler.confirmFriend = function(req, res) {
   var initiator = req.session.username;
@@ -136,80 +138,244 @@ requestHandler.denyFriend = function(req, res) { //Check for bug when all friend
 requestHandler.handleUploadPhoto = (req, res) => {
   // function from multer - used to parse multi-part form data
   upload(req, res, err => {
-    if (err) {
-      // An error occurred when uploading
-      res.status(500).send(err);
-      return;
-    }
+      if (err) {
+        // An error occurred when uploading
+        res.status(500).send(err);
+        return;
+      }
+      // console.log(req.files); => coming through correctly
+      var buffers = [];
+      for (let x of req.files) {
+        buffers.push(x.buffer);
+      }
+      console.log(buffers); //=> coming through correctly for 1 and 2 but not more files
+      // .uploadPhotoBuffer from Cloudinary - req.file.buffer from multer
 
-    // .uploadPhotoBuffer from Cloudinary - req.file.buffer from multer
-    cloudinaryApi.uploadPhotoBuffer(req.file.buffer, result => {
-      const photo = {
-        description: req.body.description,
-        url: result.url, // result returned from Cloudinary API (url of photo)
-      };
+      var cloudinaryCall = function(buffer, callback) {
+        cloudinaryApi.uploadPhotoBuffer(buffer, result => {
+          const photo = {
+            description: req.body.description,
+            url: result.url, // result returned from Cloudinary API (url of photo)
+          };
 
-      const album = {
-        name: req.body.albumName,
-        photos: [
-          photo,
-        ],
-      };
+          const album = {
+            name: req.body.albumName,
+            photos: [
+              photo,
+            ],
+          };
 
-      // Find the user and add the uploaded photo
-      User.findOne(
-        { username: req.session.username },
-        (error, user) => {
-          let allPhotosIndex;
-          let foundAlbumIndex;
-          if (!error) {
-            // find index of All Photos album
-            allPhotosIndex = _.findIndex(user.albums, foundAlbum => {
-              return foundAlbum.name === 'All Photos';
-            });
-            // check if 'All Photos' album exists
-            if (allPhotosIndex > -1) {
-              // add every photo that gets uploaded to the All Photos album
-              user.albums[allPhotosIndex].photos.push(photo);
-            // else, ('All Photos' album doesn't exist) create it
-            } else {
-              const allPhotosAlbum = {
-                name: 'All Photos',
-                photos: [
-                  photo,
-                ],
-              };
-              // and add it to user's albums
-              user.albums.push(allPhotosAlbum);
-            }
-            // if the user specified a different album...
-            if (req.body.albumName !== 'All Photos') {
-              // check if album already exists by finding its index
-              foundAlbumIndex = _.findIndex(user.albums, foundAlbum => {
-                return foundAlbum.name === req.body.albumName;
-              });
-              // if album exists...
-              if (foundAlbumIndex > -1) {
-                // add the uploaded photo to that album
-                user.albums[foundAlbumIndex].photos.push(photo);
-              // else, add the album to the user's album list
+          // Find the user and add the uploaded photo
+          User.findOne({
+              username: req.session.username
+            },
+            (error, user) => {
+              let allPhotosIndex;
+              let foundAlbumIndex;
+              if (!error) {
+                // find index of All Photos album
+                allPhotosIndex = _.findIndex(user.albums, foundAlbum => {
+                  return foundAlbum.name === 'All Photos';
+                });
+                // check if 'All Photos' album exists
+                if (allPhotosIndex > -1) {
+                  // add every photo that gets uploaded to the All Photos album
+                  user.albums[allPhotosIndex].photos.push(photo);
+                  // else, ('All Photos' album doesn't exist) create it
+                } else {
+                  const allPhotosAlbum = {
+                    name: 'All Photos',
+                    photos: [
+                      photo,
+                    ],
+                  };
+                  // and add it to user's albums
+                  user.albums.push(allPhotosAlbum);
+                }
+                // if the user specified a different album...
+                if (req.body.albumName !== 'All Photos') {
+                  // check if album already exists by finding its index
+                  foundAlbumIndex = _.findIndex(user.albums, foundAlbum => {
+                    return foundAlbum.name === req.body.albumName;
+                  });
+                  // if album exists...
+                  if (foundAlbumIndex > -1) {
+                    // add the uploaded photo to that album
+                    user.albums[foundAlbumIndex].photos.push(photo);
+                    // else, add the album to the user's album list
+                  } else {
+                    user.albums.push(album);
+                  }
+                }
+                // save updated user and send back to client
+                user.save((err, savedUser) => { // eslint-disable-line
+                  //res.status(200).json(savedUser);
+                  console.log('user saved');
+                  callback();
+                });
               } else {
-                user.albums.push(album);
+                res.status(500).json(err);
               }
-            }
-            // save updated user and send back to client
-            user.save((err, savedUser) => { // eslint-disable-line
-              res.status(200).json(savedUser);
-            });
-          } else {
-            res.status(500).json(err);
-          }
-        } // eslint-disable-line
-      );
+            } // eslint-disable-line
+          );
+        });
+      };
+      asyncEach(buffers, cloudinaryCall, function() {
+        console.log('success: photographs saved to cloud');
+        User.findOne({username: req.session.username}, function(err, user) {
+          console.log('sending back updated user with fresh photos');
+          res.status(200).json(user);
+        });
+      });
     });
-  });
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// requestHandler.handleUploadPhoto = (req, res) => {
+//   // function from multer - used to parse multi-part form data
+//   upload(req, res, err => {
+//     if (err) {
+//       // An error occurred when uploading
+//       res.status(500).send(err);
+//       return;
+//     }
+//     console.log(req); // at this point we have the req and just need to send the files
+
+//     var arrOfPhotosAndWhatever = [];
+
+//     let album;
+
+//     // .uploadPhotoBuffer from Cloudinary - req.file.buffer from multer
+//     var chobiCallback = function (result) {
+//       const photo = {
+//         description: req.body.description,
+//         url: result.url, // result returned from Cloudinary API (url of photo)
+//       };
+
+//       arrOfPhotosAndWhatever.push(photo);
+
+//       album = {
+//         name: req.body.albumName,
+//         photos: [
+//           photo,
+//         ],
+//       };
+//     }
+
+//     //cloudinaryApi.uploadPhotoBuffer(req.file.buffer, chobiCallback); // <- make these (req.body.files.length) times
+
+//     var tasks = [];
+//     for (let i = 0; i < req.files.length; i++) {
+//       tasks.push(cloudinaryApi.uploadPhotoBuffer.bind(this, req.files[i].buffer, chobiCallback));
+//     }
+
+//     var asyncMap = function(tasks, callback) {
+//       var result = [];
+//       var counter = 0;
+//       for (let i = 0; i < tasks.length; i++) {
+//         (function(i) {
+//           tasks[i](function(val) {
+//             result[i] = val;
+//             counter++;
+//             if (counter === tasks.length) {
+//               callback(result);
+//             }
+//           });
+//         })(i);
+//       }
+//     };
+
+//     asyncMap(tasks, function() {
+//       console.log('done performing all tasks');
+//       // Find the user and add the uploaded photo
+//       User.findOne(
+//         { username: req.session.username },
+//         (error, user) => {
+//           let allPhotosIndex;
+//           let foundAlbumIndex;
+//           if (!error) {
+//             // find index of All Photos album
+//             allPhotosIndex = _.findIndex(user.albums, foundAlbum => {
+//               return foundAlbum.name === 'All Photos';
+//             });
+//             // check if 'All Photos' album exists
+//             if (allPhotosIndex > -1) {
+//               // add every photo that gets uploaded to the All Photos album
+//               arrOfPhotosAndWhatever.forEach(function(photo) {
+//                 user.albums[allPhotosIndex].photos.push(photo);
+//               });
+//             // else, ('All Photos' album doesn't exist) create it
+//             } else {
+//               const allPhotosAlbum = {
+//                 name: 'All Photos',
+//                 photos: [
+//                   photo,
+//                 ],
+//               };
+//               // and add it to user's albums
+//               user.albums.push(allPhotosAlbum);
+//             }
+//             // if the user specified a different album...
+//             if (req.body.albumName !== 'All Photos') {
+//               // check if album already exists by finding its index
+//               foundAlbumIndex = _.findIndex(user.albums, foundAlbum => {
+//                 return foundAlbum.name === req.body.albumName;
+//               });
+//               // if album exists...
+//               if (foundAlbumIndex > -1) {
+//                 // add the uploaded photo to that album
+//                 arrOfPhotosAndWhatever.forEach(function(photo) {
+//                   user.albums[foundAlbumIndex].photos.push(photo);
+//                 });
+//               // else, add the album to the user's album list
+//               } else {
+//                 user.albums.push(album);
+//               }
+//             }
+//             // save updated user and send back to client
+//             user.save((err, savedUser) => { // eslint-disable-line
+//               res.status(200).json(savedUser);
+//             });
+//           } else {
+//             res.status(500).json(err);
+//           }
+//         } // eslint-disable-line
+//       );
+//     });
+
+//   });
+// };
 
 // Authentication methods
 

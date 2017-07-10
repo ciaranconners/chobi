@@ -36,13 +36,13 @@ const PhotoForm = ({addPhoto, currentUser, selectAlbum, getAlbum, selectedAlbum}
       selectAlbum(newName.value);
       // albums.push(newName.value);
       // console.log(newName.value);
-      addPhoto(photo.files[0], selectedAlbum, desc.value, newName.value);
+      addPhoto(photo.files, selectedAlbum, desc.value, newName.value);
       photo.value = '';
       desc.value = '';
       newName.value = '';
     }}>
       <div className="form-group">
-        <input id="photo" className="form-control" type="file" name="photo" placeholder="Upload Photo" ref={node => {
+        <input id="photo" className="form-control" type="file" multiple name="photo" placeholder="Upload Photo" ref={node => {
           photo = node;
         }}/>
       </div>
