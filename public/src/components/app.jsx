@@ -49,39 +49,6 @@ export default class App extends React.Component {
     };
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // ------------------------------------------------------
   //  Navbar stuff
 
@@ -141,42 +108,6 @@ export default class App extends React.Component {
       }.bind(this)
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   setSelectedAlbum(name) {
     this.setState({'selectedAlbum': name});
