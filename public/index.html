@@ -24,8 +24,6 @@
     var shouldMove = true;
     var startStopCarousel = function() {
       window.clickNext = function() {
-        console.log('click..');
-        console.log(' ');
         $('#myCarousel > a.carousel-control.right').click();
       };
 
@@ -33,15 +31,13 @@
       window.intervalInMilliseconds = 3000;
 
       if (shouldMove === true) {
-        console.log('about to start the interval');
         var myIntv = setInterval(clickNext, intervalInMilliseconds);
-        $('#carouselBtn').text('Pause Slideshow');
-        shouldMove = false; // set to false for next iteration
+        $('#carouselBtn').text('Slideshow Started');
+        shouldMove = !shouldMove; // set to false for next iteration
       } else {
-        console.log('about to clear the interval');
-        clearInterval(myIntv)
         $('#carouselBtn').text('Start Slideshow');
-        shouldMove = true;
+        clearInterval(myIntv);
+        shouldMove = !shouldMove;
       }
     }; // End carousel movement -------------------------------------------------
   </script>
