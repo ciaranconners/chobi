@@ -75,7 +75,7 @@ export default class App extends React.Component {
     var data = new FormData();
 
     for (let i = 0; i < photo.length; i++) {
-      console.log('photo from form: ', photo);
+      // console.log('photo from form: ', photo);
       data.append('photo', photo[i], photo[i].name);
     }
     // data.append('photo', photo, photo.name);
@@ -170,7 +170,7 @@ export default class App extends React.Component {
       url: '/user/confirmFriends/' + this.state.currentUser.username,
       data: {addedFriend: friend, friends: friends},
       success: function(response) {
-        console.log(response);
+        // console.log(response);
         this.setState({friends: response});
       }.bind(this),
       error: function(error) {
@@ -194,7 +194,7 @@ export default class App extends React.Component {
       url: '/user/denyFriends/' + this.state.currentUser.username,
       data: {deniedFriend: friend, friends: friends},
       success: function(response) {
-        console.log(response);
+        // console.log(response);
         this.setState({friends: response});
       }.bind(this),
       error: function(error) {
@@ -204,14 +204,14 @@ export default class App extends React.Component {
   }
 
   showAlbums(friend) {
-    console.log('friend albums');
+    // console.log('friend albums');
     $.ajax({
       type: 'GET',
       url: '/user/showFriendAlbums/' + friend,
       success: function(data) {
-        console.log(data);
+        // console.log(data);
         this.setState({albums: data, featuredFriend: friend});
-        console.log(this.state.featuredFriend);
+        // console.log(this.state.featuredFriend);
       }.bind(this),
       error: function(err) {
         console.error('error', err);
@@ -223,7 +223,7 @@ export default class App extends React.Component {
   //  AlbumList stuff
 
   selectAlbum(album, photo) {
-    console.log('fired selectAlbum');
+    // console.log('fired selectAlbum');
     let photoNum = photo || 0;
     this.setState({currentAlbum: album, currentPhoto: photoNum});
   }
@@ -238,13 +238,11 @@ export default class App extends React.Component {
            albums: this.state.albums
          },
          success: function(data) {
-           console.log('success, i think');
-           console.log('and some data', data);
            $.ajax({
              type: 'GET',
              url: '/user/' + this.state.currentUser,
              success: function(data) {
-              console.log(data);
+              // console.log(data);
                this.setState({
                  albums: data.albums,
                  currentUser: data.username
