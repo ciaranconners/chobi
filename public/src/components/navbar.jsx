@@ -31,7 +31,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
             <span className="icon-bar"></span>
           </button>
           <a className="navbar-brand" href="/"><img src="../images/Chobi.png" /></a>
-          <h5 className="navbar-brand">Welcome, {currentUser.username}!</h5>
+          <h5 className="navbar-brand welcome-header">Welcome, {currentUser.username}!</h5>
         </div>
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -55,7 +55,14 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
                 <strong><p>Incoming Friend Requests</p></strong>
                 {friends.map((friend) => {
                   if (friend.status === 'pending' && friend.sender !== currentUser.username) {
-                    return (<div>{friend.username}<button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    return (
+                      <div>{friend.username}
+                        <div className="pendingBtnWrapper">
+                          <button onClick={() => {confirmFriend(friend.username)}}><span className="glyphicon glyphicon-ok"></span></button>
+                          <button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button>
+                        </div>
+                      </div>
+                      );
                     }
                   }
                 )}
@@ -63,7 +70,13 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
                 <strong><p>Sent Friend Requests</p></strong>
                 {friends.map((friend) => {
                   if (friend.status === 'pending' && friend.sender === currentUser.username) {
-                    return (<div>{friend.username}<button onClick={() => {denyFriend(friend.username)}}>Cancel request</button></div>);
+                    return (
+                      <div>{friend.username}
+                        <div className="sentBtnWrapper">
+                          <button onClick={() => {denyFriend(friend.username)}}>Cancel request</button>
+                        </div>
+                      </div>
+                      );
                     }
                   }
                 )}
@@ -71,7 +84,17 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
                 <strong><p>Friends</p></strong>
                 {friends.map((friend) => {
                   if (friend.status === 'accepted') {
-                    return (<div>{friend.username}<button onClick={() => {showAlbums(friend.username)}}>Show albums</button><button onClick={() => {denyFriend(friend.username)}}><span className="glyphicon glyphicon-remove"></span></button></div>);
+                    return (
+                      <div>{friend.username}
+                        <div className='acceptedBtnWrapper'>
+                          <button onClick={() => {showAlbums(friend.username)}}>Show albums</button>
+                          <button onClick={() => {denyFriend(friend.username)}}>
+                            <span className="glyphicon glyphicon-remove"></span>
+                          </button>
+                        </div>
+                        <br/>
+                      </div>
+                      );
                     }
                   }
                 )}
