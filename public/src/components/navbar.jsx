@@ -31,6 +31,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
             <span className="icon-bar"></span>
           </button>
           <a className="navbar-brand" href="/"><img src="../images/Chobi.png" /></a>
+          <h5 className="navbar-brand">Welcome, {currentUser.username}!</h5>
         </div>
 
         <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -49,7 +50,7 @@ const Navbar = ({addPhoto, currentUser, selectAlbum, addFriend, friends, selecte
 
 
             <li className="dropdown">
-              <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-bell"></span></button>
+              <button className="dropdown-toggle" data-toggle="dropdown"><span className="glyphicon glyphicon-user"></span></button>
               <div className="dropdown-menu">
                 <strong><p>Incoming Friend Requests</p></strong>
                 {friends.map((friend) => {

@@ -76,9 +76,15 @@ requestHandler.friendUser = function(req, res) {
   var receiver = req.body.friends[req.body.friends.length - 1].username;
 
   User.findOne({username: receiver}).then(function(receiver) {
-    if (receiver === null) {
+    if (receiver === null || receiver.length === 0) {
       res.send('User not found');
     } else {
+      receiver.friends.forEach(function(friend, i) {
+        if (friend.username === initiator && friend.status === 'denied') {
+          //Take a previously denied user out of the friends array before adding them again
+          receiver.friends.splice(i, 1);
+        }
+      });
       receiver.friends.push({username: initiator, status: 'pending', sender: initiator});
       User.findOneAndUpdate({username: receiver.username}, {friends: receiver.friends}, {new: true}).then(function(oldUser){
         // console.log("receiver ", oldUser)
@@ -93,44 +99,63 @@ requestHandler.friendUser = function(req, res) {
 
 requestHandler.confirmFriend = function(req, res) {
   var initiator = req.session.username;
-  //console.log(req.body);
+  console.log('====================', req.body);
   var receiver = req.body.addedFriend;
 
-  User.findOne({username: receiver}).then(function(receiver) {
-    receiver.friends.forEach(function(friend) {
-      if (friend.username === initiator) {
-        friend.status = 'accepted';
+  User.findOne({username: receiver}, function(err, foundReceiver) {
+    if (err) {
+      res.status(500).send('There was an error with finding the request recipient ', err);
+    } else {
+      foundReceiver.friends.forEach(function(friend) {
+        if (friend.username === initiator) {
+          friend.status = 'accepted';
+        }
+      });
+      User.findOneAndUpdate({username: foundReceiver.username}, {friends: foundReceiver.friends}, {new: true}, function(err, returnedReceiver) {
+        if (err) {
+          res.status(500).send('There was an error with updating the request recipient ', err);
+        } else {
+          User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}, function(err, initiator) {
+            if (err) {
+              res.status(500).send('There was an error with updating the request initiator', err);
+            } else {
+              res.send(initiator.friends);
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
+requestHandler.denyFriend = function(req, res) {
+    var initiator = req.session.username;
+    var receiver = req.body.deniedFriend;
+
+    User.findOne({username: receiver}, function(err, foundReceiver) {
+      if (err) {
+        res.status(500).send('There was an error with finding the request recipient ', err);
+      } else {
+        foundReceiver.friends.forEach(function(friend) {
+          if (friend.username === initiator) {
+            friend.status = 'denied';
+          }
+        });
+        User.findOneAndUpdate({username: foundReceiver.username}, {friends: foundReceiver.friends}, {new: true}, function(err, returnedReceiver) {
+          if (err) {
+            res.status(500).send('There was an error with updating the request recipient ', err);
+          } else {
+            User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}, function(err, initiator) {
+              if (err) {
+                res.status(500).send('There was an error with updating the request initiator', err);
+              } else {
+                res.send(initiator.friends);
+              }
+            });
+          }
+        });
       }
     });
-    User.findOneAndUpdate({username: receiver}, {friends: receiver.friends}, {new: true}).then(function(oldUser){
-      console.log("receiver ", oldUser)
-      User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}).then(function(oldUser){
-        console.log("initiator ", oldUser)
-        res.send(oldUser.friends);
-        })
-      })
-    })
-  }
-
-requestHandler.denyFriend = function(req, res) { //Check for bug when all friends are deleted
-  var initiator = req.session.username;
-  //console.log(req.body);
-  var receiver = req.body.deniedFriend;
-
-  User.findOne({username: receiver}).then(function(receiver) {
-    receiver.friends.forEach(function(friend, i) {
-      if (friend.username === initiator) {
-        friend.status = 'denied';
-      }
-    });
-    User.findOneAndUpdate({username: receiver}, {friends: receiver.friends}, {new: true}).then(function(oldUser){
-      console.log("receiver ", oldUser)
-      User.findOneAndUpdate({username: initiator}, {friends: req.body.friends}, {new: true}).then(function(oldUser){
-        console.log("initiator ", oldUser)
-        res.send(oldUser.friends);
-        })
-      })
-    })
   }
 
 requestHandler.handleUploadPhoto = (req, res) => {
