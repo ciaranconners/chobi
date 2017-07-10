@@ -222,7 +222,9 @@ export default class App extends React.Component {
         success: function(data) {
           console.log('success, i think');
           console.log('and some data', data);
-        },
+          location.reload(); // intermediate fix
+          //this.setState({albums: data.albums});
+        }.bind(this),
         error: function(err) {
           console.error('error', err);
         }.bind(this)

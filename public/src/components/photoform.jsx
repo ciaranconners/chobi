@@ -40,6 +40,7 @@ const PhotoForm = ({addPhoto, currentUser, selectAlbum, getAlbum, selectedAlbum}
       photo.value = '';
       desc.value = '';
       newName.value = '';
+      selectAlbum('');
     }}>
       <div className="form-group">
         <input id="photo" className="form-control" type="file" multiple name="photo" placeholder="Upload Photo" ref={node => {
