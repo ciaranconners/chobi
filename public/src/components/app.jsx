@@ -187,10 +187,21 @@ export default class App extends React.Component {
 
     var newFriend = true;
 
-    friends.forEach(function(friend) {
-      if (friend.username === username) {
-        alert('You\'ve already friended this person');
+    if (username === this.state.currentUser.username) {
+      alert('You can\'t request yourself as a friend');
+      newFriend = false;
+    }
+
+    friends.forEach(function(friend, i) {
+      if (friend.username === username && friend.status === 'pending') {
+        alert('You\'ve already requested this person');
         newFriend = false;
+      } else if (friend.username === username && friend.status === 'accepted') {
+        alert('You\'re already friends with this person');
+        newFriend = false;
+      } else if (friend.username === username && friend.status === 'denied') {
+        //Take a previously denied user out of the friends array before adding them again
+        friends.splice(i, 1);
       }
     });
     if (newFriend) {
@@ -242,7 +253,7 @@ export default class App extends React.Component {
 
     friends.forEach(function(userFriend, i) {
       if (userFriend.username === friend) {
-        friends.splice(i, 1); //Check for bug when all friends are deleted
+        userFriend.status = 'denied'; //Check for bug when all friends are deleted
       }
     });
 
