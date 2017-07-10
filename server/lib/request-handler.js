@@ -53,6 +53,7 @@ requestHandler.updateUser = function(req, res) {
 
   User.findByIdAndUpdate({_id: id}, {albums: albums}, {new: true})
   .then(function(updatedUserData) {
+    console.log(updatedUserData);
     res.json(updatedUserData);
   });
 };

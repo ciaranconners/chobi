@@ -213,23 +213,37 @@ export default class App extends React.Component {
   }
 
   deleteAlbum(albumIndex) {
-    var helper = function() {
-      // COMMENT/UNCOMMENT THIS TO MAKE IT ACTUALLY DELETE
-      $.ajax({
-        type: 'PUT',
-        url: '/user/' + this.state.currentUser._id,
-        data: {albums: this.state.albums},
-        success: function(data) {
-          console.log('success, i think');
-          console.log('and some data', data);
-          location.reload(); // intermediate fix
-          //this.setState({albums: data.albums});
-        }.bind(this),
-        error: function(err) {
-          console.error('error', err);
-        }.bind(this)
-      });
-    }
+     var helper = function() {
+       // COMMENT/UNCOMMENT THIS TO MAKE IT ACTUALLY DELETE
+       $.ajax({
+         type: 'PUT',
+         url: '/user/' + this.state.currentUser._id,
+         data: {
+           albums: this.state.albums
+         },
+         success: function(data) {
+           console.log('success, i think');
+           console.log('and some data', data);
+           $.ajax({
+             type: 'GET',
+             url: '/user/' + this.state.currentUser,
+             success: function(data) {
+              console.log(data);
+               this.setState({
+                 albums: data.albums,
+                 currentUser: data.username
+               }, location.reload());
+             }.bind(this),
+             error: function(err) {
+               console.error('error', err);
+             }.bind(this)
+           });
+         }.bind(this),
+         error: function(err) {
+           console.error('error', err);
+         }.bind(this)
+       });
+     };
 
     // filters out the album to delete by the index and updates the state
     if (confirm('really?') === true) {
