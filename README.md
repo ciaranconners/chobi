@@ -5,7 +5,7 @@
 
 ## Team
 
-  - __Product Owner__: Ciaran Conners
+  - __Product Owner__: Ciarán Conners
   - __Scrum Master__: Patrick Tang
   - __Development Team Members__: Sheena Ramirez, James Quillin
 
