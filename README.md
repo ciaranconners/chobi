@@ -5,9 +5,9 @@
 
 ## Team
 
-  - __Product Owner__: Scott Rudiger
-  - __Scrum Master__: Kenneth Marshall
-  - __Development Team Members__: Kevin MacFarlane, Placid Rodrigues
+  - __Product Owner__: Ciaran Conners
+  - __Scrum Master__: Patrick Tang
+  - __Development Team Members__: Sheena Ramirez, James Quillin
 
 ## Table of Contents
 
