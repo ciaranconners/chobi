@@ -1,7 +1,7 @@
 # Chobi
 
-> Supercharged Photo Album
-http://159.203.128.16:8080/
+> Supercharged Photo Album:
+> http://159.203.128.16:8080/
 
 ## Team
 
